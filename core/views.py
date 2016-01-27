@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render, render_to_response
-import requests as rq
+from .get_data_from_rss import get_data_from_rss
 
 
 def index(request):
@@ -12,10 +13,5 @@ def index(request):
 
 
 def details(request, newspaper):
-    newspapers = {
-        'ukr_pravda': 'http://www.pravda.com.ua/rss/view_news/',
-        'espreso_tv': 'http://espreso.tv/rss',
-        '5_ua': 'http://www.5.ua/novyny/rss/',
-    }
-    # if 404 or smthng else with rss, try
+    f = get_data_from_rss(newspaper)
     return render_to_response('details.html')
