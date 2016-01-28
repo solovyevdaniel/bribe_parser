@@ -2,39 +2,44 @@
 from lxml import etree
 import re
 import requests
+from datetime import datetime
 
 
 def get_xml(link):
     r = requests.get(link)
-    #todo if 404 or smthng else with rss
-    xml_string = r.content
-    return etree.XML(xml_string)
+    if r.status_code == requests.codes.ok:
+        xml_string = r.content
+        return etree.XML(xml_string)
+    else:
+        return None
 
 
 def get_articles(root):
     find_text = etree.XPath("/rss/channel/item/title/text()")
     titles = find_text(root)
 
+    # todo add "корупція/корумпований" and other regex
     regex_bribe = re.compile(r'([а-яії-]*хабар[а-яії-]*)', re.IGNORECASE)
 
-    indexes_title = []
+    articles = []
     for title in titles:
-        if re.search(regex_bribe, title):
-            # print('regex result:', re.search(regex_bribe, title))
-            indexes_title.append(titles.index(title))
+        result_re = re.search(regex_bribe, title)
+        if result_re:
+            title_index = titles.index(title)
+
+            # get link
+            link = etree.XPath('/rss/channel/item[' + str(title_index + 1) + ']/pdalink/text()')
+            if not link(root):
+                link = etree.XPath('/rss/channel/item[' + str(title_index + 1) + ']/link/text()')
+
+            # get date
+            date = etree.XPath('/rss/channel/item[' + str(title_index + 1) + ']/pubDate/text()')
+            date = datetime.strptime(date(root)[0], "%a, %d %b %Y %H:%M:%S %z")
+
+            articles.append([title, link(root)[0], date])
+            return articles
         else:
-            #todo if return None
-            pass
-    # print(indexes_title)
-
-    for item in indexes_title:
-        # print(item)
-
-        find_text2 = etree.XPath('/rss/channel/item[' + str(item + 1) + ']/link/text()')
-        # print(find_text2(root))
-
-        find_text3 = etree.XPath('/rss/channel/item[' + str(item + 1) + ']/description/text()')
-        # print(find_text3(root))
+            return None
 
 
 def get_data_from_rss(link):
@@ -45,6 +50,8 @@ def get_data_from_rss(link):
     }
 
     if link in newspapers.keys():
-        #todo if None
         xml = get_xml(newspapers[link])
-        articles = get_articles(xml)
+        if xml:
+            return get_articles(xml)
+        else:
+            return None
