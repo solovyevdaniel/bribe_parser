@@ -25,8 +25,7 @@ def details(request, newspaper):
                 article.save()
 
     all_articles = Article.objects.filter(newspaper=newspaper)
-    # todo дичь какая-то
-    if all_articles is []:
-        all_articles = 'Нет ни одной статьи!'
+    if not all_articles:
+        all_articles = None
     return render_to_response('details.html', {'data': all_articles})
 

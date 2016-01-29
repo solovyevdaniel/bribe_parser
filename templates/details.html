@@ -6,6 +6,9 @@
 </head>
 <body>
 <p> Okey! </p>
+{% if data %}
+
+
 <table>
     <tr>
         <th>Title</th>
@@ -17,9 +20,10 @@
         <td>{{ item.pub_date }}</td>
     </tr>
     {% endfor %}
-
-    <tr></tr>
 </table>
+{% else %}
+<p>No articles yet!</p>
+{% endif %}
 
 
 </body>
