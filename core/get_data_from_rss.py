@@ -19,7 +19,8 @@ def get_articles(root):
     titles = find_text(root)
 
     # todo add "корупція/корумпований" and other regex
-    regex_bribe = re.compile(r'([а-яії-]*хабар[а-яії-]*)', re.IGNORECASE)
+    # regex_bribe = re.compile(r'([а-яії-]*хабар[а-яії-]*)', re.IGNORECASE)
+    regex_bribe = re.compile(r'країни', re.IGNORECASE)
 
     articles = []
     for title in titles:
@@ -37,9 +38,7 @@ def get_articles(root):
             date = datetime.strptime(date(root)[0], "%a, %d %b %Y %H:%M:%S %z")
 
             articles.append([title, link(root)[0], date])
-            return articles
-        else:
-            return None
+    return articles
 
 
 def get_data_from_rss(link):
@@ -51,7 +50,7 @@ def get_data_from_rss(link):
 
     if link in newspapers.keys():
         xml = get_xml(newspapers[link])
-        if xml:
+        if xml is not None:
             return get_articles(xml)
         else:
             return None
