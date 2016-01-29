@@ -6,5 +6,5 @@ class Article(models.Model):
     title = models.CharField(max_length=500)
     link = models.CharField(max_length=500)
     pub_date = models.DateTimeField()
-    bribe = models.CharField(max_length=30, blank=True)
-    place = models.CharField(max_length=30, blank=True)
+    bribe = models.CharField(max_length=30, blank=True, null=True)
+    place = models.CharField(max_length=30, blank=True, null=True)

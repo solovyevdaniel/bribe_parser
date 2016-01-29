@@ -6,15 +6,13 @@
 </head>
 <body>
 <p> Okey! </p>
-{% if data %}
-
-
+{% if articles %}
 <table>
     <tr>
         <th>Title</th>
         <th>Publication date</th>
     </tr>
-    {% for item in data %}
+    {% for item in articles %}
     <tr>
         <td><a href="{{ item.link }}">{{ item.title }}</a></td>
         <td>{{ item.pub_date }}</td>

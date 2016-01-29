@@ -24,8 +24,8 @@ def details(request, newspaper):
                 article = Article(newspaper=newspaper, title=title, link=link, pub_date=pub_date)
                 article.save()
 
-    all_articles = Article.objects.filter(newspaper=newspaper)
-    if not all_articles:
-        all_articles = None
-    return render_to_response('details.html', {'data': all_articles})
+    articles_by_newspaper = Article.objects.filter(newspaper=newspaper)
+    if not articles_by_newspaper:
+        articles_by_newspaper = None
+    return render_to_response('details.html', {'articles': articles_by_newspaper})
 

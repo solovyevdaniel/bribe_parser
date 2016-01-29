@@ -20,7 +20,6 @@ def get_articles(root):
 
     # todo add "корупція/корумпований" and other regex
     regex_bribe = re.compile(r'([а-яії-]*хабар[а-яії-]*)', re.IGNORECASE)
-    # regex_bribe = re.compile(r'Україн[\w]*', re.IGNORECASE)
 
     articles = []
     for title in titles:
@@ -29,12 +28,12 @@ def get_articles(root):
             title_index = titles.index(title)
 
             # get link
-            link = etree.XPath('/rss/channel/item[' + str(title_index + 1) + ']/pdalink/text()')
+            link = etree.XPath('/rss/channel/item[{}]/pdalink/text()'.format(str(title_index + 1)))
             if not link(root):
-                link = etree.XPath('/rss/channel/item[' + str(title_index + 1) + ']/link/text()')
+                link = etree.XPath('/rss/channel/item[{}]/link/text()'.format(str(title_index + 1)))
 
             # get date
-            date = etree.XPath('/rss/channel/item[' + str(title_index + 1) + ']/pubDate/text()')
+            date = etree.XPath('/rss/channel/item[{}]/pubDate/text()'.format(str(title_index + 1)))
             date = datetime.strptime(date(root)[0], "%a, %d %b %Y %H:%M:%S %z")
 
             articles.append([title, link(root)[0], date])
