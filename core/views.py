@@ -19,9 +19,10 @@ def details(request, newspaper):
         for item in data:
             title, link, pub_date = item
             #todo if exist in db
-            article = Article(newspaper=newspaper, title=title, link=link, pub_date=pub_date)
-            article.save()
-            return render_to_response('details.html', {'data': data})
-    else:
-        return render_to_response('details.html', {'data': 'smth ne OK!!!!!!!!'})
+            check_article = Article.objects.filter(newspaper=newspaper, title=title, pub_date=pub_date).exists()
+            if not check_article:
+                article = Article(newspaper=newspaper, title=title, link=link, pub_date=pub_date)
+                article.save()
+    all_articles
+    return render_to_response('details.html', {'data': data})
 
