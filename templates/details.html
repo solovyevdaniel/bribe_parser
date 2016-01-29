@@ -6,6 +6,21 @@
 </head>
 <body>
 <p> Okey! </p>
-{{ data }}
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Publication date</th>
+    </tr>
+    {% for item in data %}
+    <tr>
+        <td><a href="{{ item.link }}">{{ item.title }}</a></td>
+        <td>{{ item.pub_date }}</td>
+    </tr>
+    {% endfor %}
+
+    <tr></tr>
+</table>
+
+
 </body>
 </html>

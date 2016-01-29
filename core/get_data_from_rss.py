@@ -19,8 +19,8 @@ def get_articles(root):
     titles = find_text(root)
 
     # todo add "корупція/корумпований" and other regex
-    # regex_bribe = re.compile(r'([а-яії-]*хабар[а-яії-]*)', re.IGNORECASE)
-    regex_bribe = re.compile(r'країни', re.IGNORECASE)
+    regex_bribe = re.compile(r'([а-яії-]*хабар[а-яії-]*)', re.IGNORECASE)
+    # regex_bribe = re.compile(r'Україн[\w]*', re.IGNORECASE)
 
     articles = []
     for title in titles:
