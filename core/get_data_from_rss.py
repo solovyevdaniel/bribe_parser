@@ -28,9 +28,9 @@ def get_articles(root):
             title_index = titles.index(title)
 
             # get link
-            link = etree.XPath('/rss/channel/item[{}]/pdalink/text()'.format(str(title_index + 1)))
-            if not link(root):
-                link = etree.XPath('/rss/channel/item[{}]/link/text()'.format(str(title_index + 1)))
+            # link = etree.XPath('/rss/channel/item[{}]/pdalink/text()'.format(str(title_index + 1)))
+            # if not link(root):
+            link = etree.XPath('/rss/channel/item[{}]/link/text()'.format(str(title_index + 1)))
 
             # get date
             date = etree.XPath('/rss/channel/item[{}]/pubDate/text()'.format(str(title_index + 1)))
@@ -45,6 +45,8 @@ def get_data_from_rss(link):
         'ukr_pravda': 'http://www.pravda.com.ua/rss/view_news/',
         'espreso_tv': 'http://espreso.tv/rss',
         '5_ua': 'http://www.5.ua/novyny/rss/',
+        '112_ua': 'http://112.ua/rss/index.rss',
+        'unian': 'http://rss.unian.net/site/news_rus.rss',
     }
 
     if link in newspapers.keys():

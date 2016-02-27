@@ -2,15 +2,17 @@
 from django.shortcuts import render_to_response
 from .get_data_from_rss import get_data_from_rss
 from .models import Article
-from collections import OrderedDict
+import time
 
 
 def index(request):
-    newspapers = OrderedDict({
+    newspapers = {
         'ukr_pravda': 'Українська правда',
         'espreso_tv': 'Еспресо.тв',
         '5_ua': '5 канал',
-    })
+        '112_ua': '112.ua',
+        'unian': 'Уніан.net',
+    }
     return render_to_response('main.html', {'newspapers': newspapers})
 
 
