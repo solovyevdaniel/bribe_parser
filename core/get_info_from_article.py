@@ -1,6 +1,5 @@
 import re
 import nltk
-from . import translate_article as ta
 
 # Regex for place
 GPE = re.compile(r'GPE.*/')
@@ -14,16 +13,13 @@ find_money_in_article = re.compile(pattern=money_pattern, flags=re.IGNORECASE)
 
 
 def get_info_place(named_entities):
-    place = []
-    # todo rename answer
-    answer = re.findall(GPE, str(named_entities))
-    if answer:
-        for item in answer:
-            if item[4:-1] not in place:
-                place.append(item[4:-1])
-    else:
-        return None
-    return place
+    places = []
+    re_places = re.findall(GPE, str(named_entities))
+    if re_places:
+        for item in re_places:
+            if item[4:-1] not in places:
+                places.append(item[4:-1])
+    return places
 
 
 def rank_str_to_digit(rank):
@@ -38,7 +34,7 @@ def rank_str_to_digit(rank):
     else:
         return 1
 
-# Todo
+
 def get_info_money(article):
     money = []
     result_bribe = re.findall(find_money_in_article, article)
@@ -53,16 +49,19 @@ def get_info_money(article):
                 rank_digit = rank_str_to_digit(result[2])
 
             total_sum_of_bribe = money_numbers_replaced * rank_digit
+            money.append((total_sum_of_bribe, currency))
+    return money
 
-#Todo
+
 def article_processing(article):
     try:
         for item in article:
             tokenized = nltk.word_tokenize(item)
             tagged = nltk.pos_tag(tokenized)
             named_entities = nltk.ne_chunk(tagged)
-
-            get_info_place(named_entities)
-            get_info_money(article)
-    except Exception:
-        return 'azazaaza lalka'
+    except:
+        return None
+    else:
+        places = get_info_place(named_entities)
+        money = get_info_money(article)
+    return places, money

@@ -10,8 +10,8 @@ def translate_article(article):
     if r.status_code == requests.codes.ok:
         yandex_status_code = int(r.text[8:11])
         if yandex_status_code == 200:
-            text = r.json()['text'][0]
-            return text
+            translated_article = r.json()['text'][0]
+            return translated_article
         # TODO: another error codes https://tech.yandex.ru/translate/doc/dg/reference/translate-docpage/
         # if create new apikey or something else
         else:
