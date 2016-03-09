@@ -13,3 +13,4 @@ class Bribe(models.Model):
     money = models.CharField(max_length=30, blank=True, null=True)
     currency = models.CharField(max_length=30, blank=True, null=True)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    checked = models.BooleanField(default=False)
