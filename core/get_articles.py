@@ -71,6 +71,7 @@ def parse_news(articles, page, header_xpath, url_xpath):
             link_article = data['link'] + url_list[index]
             pub_date, text_article = parse_article_page(link_article)
             articles.append({
+                'header': header,
                 'url': link_article,
                 'text': text_article,
                 'pub_date': pub_date
