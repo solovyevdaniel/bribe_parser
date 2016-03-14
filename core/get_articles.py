@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
 import lxml.html as html
-import lxml
-import requests
 import time
 from random import randint
 
@@ -30,9 +28,7 @@ data = {
             'p_body': "//div[contains(@class, 'article-content')]/div[contains(@class, 'body')]/p",
         },
     'date': "//span[contains(@class, 'article-date')]/text()"
-
     # todo: add category?
-
 }
 
 
@@ -49,17 +45,23 @@ def scrap_text(article_page):
     text = ' '.join(article_text)
     text = re.sub(remove_script_1, '', text)
     text = re.sub(remove_script_2, '', text)
-
     return text
 
 
-def get_pub_date(page):
-    pub_date = page.xpath(data['date'])
+def get_pub_date(article_page):
+    pub_date = article_page.xpath(data['date'])
     pub_date = pub_date[0].split(' |')
     return pub_date[0]
 
 
-def parse(page, header_xpath, url_xpath):
+def parse_article_page(link_article):
+    article_page = html.parse(link_article)
+    pub_date = get_pub_date(article_page)
+    text_article = scrap_text(article_page)
+    return pub_date, text_article
+
+
+def parse_news(articles, page, header_xpath, url_xpath):
     header_list = page.xpath(header_xpath)
     for header in header_list:
         header_list_bribe = re.findall(regex_bribe, str(header))
@@ -67,30 +69,25 @@ def parse(page, header_xpath, url_xpath):
             index = header_list.index(header)
             url_list = page.xpath(url_xpath)
             link_article = data['link'] + url_list[index]
-
-            article_page = html.parse(link_article)
-            pub_date = get_pub_date(article_page)
-            text_article = scrap_text(article_page)
-
+            pub_date, text_article = parse_article_page(link_article)
             articles.append({
                 'url': link_article,
                 'text': text_article,
                 'pub_date': pub_date
             })
+    return articles
 
 
 def parse_5_ua():
-    # todo: if you want get all the articles, you must stop when texts/htmls of responses will be the same. Use loop while. lol))
+    articles = []
     for i in range(1, 2):
         time.sleep(randint(0, 2))
-        page = html.parse(data['news_link'] + str(i))  # todo: make check of response
-        parse(page=page, header_xpath=data['header']['top'], url_xpath=data['url']['top'])
-        parse(page=page, header_xpath=data['header']['list'], url_xpath=data['url']['list'])
-articles = []
-# print(scrap_text(article_page=''))
-parse_5_ua()
-print('--')
-# for item in articles:
-#     for key, value in item.items():
-#         print(key, ' ', value)
-#         print('____________________')
+        # todo: make check of response
+        page = html.parse(data['news_link'] + str(i))
+
+        # parse top news
+        parse_news(articles, page=page, header_xpath=data['header']['top'], url_xpath=data['url']['top'])
+
+        # parse list news
+        parse_news(articles, page=page, header_xpath=data['header']['list'], url_xpath=data['url']['list'])
+    return articles
