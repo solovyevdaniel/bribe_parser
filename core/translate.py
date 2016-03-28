@@ -1,5 +1,6 @@
 import requests
 
+# todo: replace keys to file
 key_0 = 'trnsl.1.1.20160222T224653Z.00721123b6197657.e894adadf82349bb5d89d907b7de173b017779e0'
 key_1 = 'trnsl.1.1.20160309T115625Z.a26f52b59e5d19c5.3963eed3457c7fea6384406ddc8a2d9d5d62e024'
 key_2 = 'trnsl.1.1.20160309T115849Z.d6de5cfc1f89b6d9.ab9dd71f8ffd88141550e682cf5c5d796faa7eb4'
@@ -16,7 +17,7 @@ def get_yandex_status_code(status_code):
         pass
 
 
-def translate_article(article):
+def translate(article):
     query_params = {'key': keys[0],
                     'text': article,
                     'lang': 'en'}
@@ -25,8 +26,8 @@ def translate_article(article):
     if r.status_code == requests.codes.ok:
         yandex_status_code = int(r.text[8:11])
         if get_yandex_status_code(yandex_status_code):
-            translated_article = r.json()['text'][0]
-            return translated_article
+            translated_data = r.json()['text'][0]
+            return translated_data
         else:
             # TODO: add to log!
             # TODO: count chars?

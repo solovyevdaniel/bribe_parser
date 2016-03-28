@@ -2,10 +2,11 @@
 from django.shortcuts import render_to_response
 from .get_data_from_rss import get_data_from_rss
 from .get_info_from_article import article_processing
-from .translate_article import translate_article
-from .get_articles import get_articles
-from .models import Article, Bribe
+from .translate import translate
+from .get_articles import parse_5_ua
+from .models import Article
 import time
+import dateutil.parser as dp
 
 
 def index(request):
@@ -21,24 +22,22 @@ def index(request):
 
 def parse(request):
     start_time = time.time()
-    newspapers = {
-        '5_ua':
-            {
-                'link': 'http://www.5.ua/novyny/?page=',
-                'header':
-                    {
-                        'top': "//div[contains(@class, 'b-main-section-news--top__info cutter')]/span[contains(@class, 'caption')]/a",
-                        'list': "//div[contains(@class, 'b-main-section-news-list--info cutter')]/span[contains(@class, 'caption')]/a",
+    articles = parse_5_ua()
+    for article in articles:
+        # translate
+        translated_article = translate(article['text'])
+        translated_pub_date = translate(article['pub_date'])
+        date = dp.parse(translated_pub_date)
+        # save to Article
+        art = Article(newspaper='5_ua', title=article['header'], link=article['url'], pub_date=date)
+        art.save()
+        # processing
+        places, money = article_processing(translated_article)
+        # save to Bribe
+        if money:
+            for item in money:
+                art.bribe_set.create(place=places, money=item[0], currency=item[1])
 
-                    },
-                'url':
-                    {
-                        'top': "//div[contains(@class, 'b-main-section-news--top__info cutter')]/span[contains(@class, 'caption')]/a/@href",
-                        'list': "//div[contains(@class, 'b-main-section-news-list--info cutter')]/span[contains(@class, 'caption')]/a/@href",
-                    },
-            },
-    }
-    result = get_articles(newspapers)
     return render_to_response('main.html', {'end': 'the end. Time is ' + str(time.time() - start_time) + ' seconds'})
 
 

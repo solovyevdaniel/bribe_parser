@@ -19,7 +19,7 @@ def get_info_place(named_entities):
         for item in re_places:
             if item[4:-1] not in places:
                 places.append(item[4:-1])
-    return places
+    return (' ').join(places)
 
 
 def rank_str_to_digit(rank):
@@ -53,6 +53,11 @@ def get_info_money(article):
 
 
 def article_processing(article):
+    '''
+    :param article: list
+    :return: str places;
+             list money, item - tuple( int(total sum), str(currency) )
+    '''
     named_entities = None
     try:
         for item in article:
